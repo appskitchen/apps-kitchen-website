@@ -27,13 +27,16 @@ export default function Nav() {
 
   useEffect(() => {
     const stored = (typeof window !== 'undefined' ? localStorage.getItem('ak-theme') : null) as 'dark' | 'light' | null
-    if (stored === 'light' || stored === 'dark') {
-      applyTheme(stored)
-      return
-    }
-
-    applyTheme('dark')
+    applyTheme(stored === 'light' || stored === 'dark' ? stored : 'dark')
   }, [])
+
+  const navLinks = [
+    { href: '/about', label: 'About' },
+    { href: '/work', label: 'Work' },
+    { href: '/#process', label: 'Process' },
+    { href: '/#stack', label: 'Stack' },
+    { href: '/contact', label: 'Contact' },
+  ]
 
   return (
     <nav className="ak-nav" style={{
@@ -65,17 +68,12 @@ export default function Nav() {
           onClick={() => applyTheme(theme === 'dark' ? 'light' : 'dark')}
           className="theme-toggle"
           style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '10px',
+            width: '36px', height: '36px', borderRadius: '10px',
             border: '1px solid var(--ak-border)',
             background: 'rgba(255,255,255,0.03)',
             color: 'var(--ak-white)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', transition: 'all 0.2s',
           }}
         >
           {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
@@ -86,11 +84,11 @@ export default function Nav() {
         display: 'flex', alignItems: 'center', gap: '40px',
         listStyle: 'none', fontSize: '14px', color: 'var(--ak-muted)',
       }} className="nav-links-desktop">
-        <li><Link href="/#about" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>About</Link></li>
-        <li><Link href="/work" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Work</Link></li>
-        <li><Link href="/#process" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Process</Link></li>
-        <li><Link href="/#stack" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Stack</Link></li>
-        <li><Link href="/contact" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Contact</Link></li>
+        {navLinks.map((item) => (
+          <li key={item.href}>
+            <Link href={item.href} className="nav-link">{item.label}</Link>
+          </li>
+        ))}
       </ul>
 
       <Link href="/contact" className="nav-cta" style={{
@@ -98,10 +96,7 @@ export default function Nav() {
         fontWeight: 600, fontSize: '13px',
         padding: '10px 24px', borderRadius: '100px',
         transition: 'background 0.2s',
-      }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'var(--ak-red-dark)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'var(--ak-red)')}
-      >
+      }}>
         Get in Touch
       </Link>
 
@@ -113,14 +108,11 @@ export default function Nav() {
         onClick={() => setMenuOpen(v => !v)}
         style={{
           display: 'none',
-          width: '40px',
-          height: '40px',
-          borderRadius: '12px',
+          width: '40px', height: '40px', borderRadius: '12px',
           border: '1px solid var(--ak-border)',
           background: 'rgba(255,255,255,0.02)',
           color: 'var(--ak-white)',
-          alignItems: 'center',
-          justifyContent: 'center',
+          alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer',
         }}
       >
@@ -137,36 +129,23 @@ export default function Nav() {
 
       {menuOpen && (
         <div className="nav-mobile-panel" style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
+          position: 'absolute', top: '100%', left: 0, right: 0,
           background: theme === 'light' ? 'rgba(255,255,255,0.98)' : 'rgba(10,10,10,0.98)',
           borderBottom: '1px solid var(--ak-border)',
           padding: '12px 18px 18px',
-          display: 'none',
-          flexDirection: 'column',
-          gap: '8px',
+          display: 'none', flexDirection: 'column', gap: '8px',
         }}>
-          {[
-            { href: '/#about', label: 'About' },
-            { href: '/work', label: 'Work' },
-            { href: '/#process', label: 'Process' },
-            { href: '/#stack', label: 'Stack' },
-            { href: '/contact', label: 'Contact' },
-          ].map(item => (
+          {navLinks.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setMenuOpen(false)}
               style={{
-                padding: '12px 10px',
-                borderRadius: '12px',
+                padding: '12px 10px', borderRadius: '12px',
                 color: 'var(--ak-white)',
                 border: '1px solid var(--ak-border)',
                 background: 'rgba(255,255,255,0.02)',
-                fontSize: '14px',
-                fontWeight: 500,
+                fontSize: '14px', fontWeight: 500,
               }}
             >
               {item.label}
@@ -176,12 +155,17 @@ export default function Nav() {
       )}
 
       <style>{`
+        .nav-link {
+          color: var(--ak-muted);
+          transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--ak-white); }
+        .nav-cta:hover { background: var(--ak-red-dark) !important; }
         .theme-toggle:hover {
           border-color: rgba(232,56,13,0.5);
           color: var(--ak-red);
           background: rgba(232,56,13,0.08);
         }
-
         @media (max-width: 900px) {
           .nav-links-desktop { display: none !important; }
           .nav-cta { display: none !important; }
