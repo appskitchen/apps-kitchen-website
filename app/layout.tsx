@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Preconnect to font CDN to reduce latency */}
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="" />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <a href="#main-content" className="skip-nav">Skip to main content</a>
         <main id="main-content">{children}</main>
       </body>
