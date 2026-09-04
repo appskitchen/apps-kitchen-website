@@ -1,98 +1,13 @@
 'use client'
-import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Sprout, Wrench, Rocket, TrendingUp, Search, PenTool, Cog } from 'lucide-react'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
-
-const WhiteAppIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" strokeWidth="1.8" />
-    <path d="M9 3V7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M15 3V7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M8 11H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-  </svg>
-)
-
-const StoreIcon = ({ type }: { type: 'android' | 'ios' }) => {
-  if (type === 'android') {
-    return (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M7 17V10M17 17V10M5.5 10H18.5M9 6L7.2 3.5M15 6L16.8 3.5M8 21V17M16 21V17M8 10V8.5C8 7.12 9.12 6 10.5 6H13.5C14.88 6 16 7.12 16 8.5V10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    )
-  }
-
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M15.6 5.2C14.8 6.2 13.4 6.9 12.2 6.8C12 5.5 12.6 4.2 13.3 3.3C14.2 2.3 15.7 1.7 16.9 1.8C17 3.1 16.5 4.3 15.6 5.2ZM19.4 17.2C18.8 18.1 18.6 18.5 17.8 19.3C16.8 20.4 15.5 21.8 13.8 21.8C12.3 21.8 11.9 20.9 9.9 20.9C7.8 20.9 7.4 21.8 5.9 21.8C4.2 21.8 3 20.5 2 19.4C-0.8 16.3 -1 12.5 0.6 10.1C1.8 8.3 3.7 7.2 5.5 7.2C7.4 7.2 8.5 8.2 9.8 8.2C11 8.2 11.8 7.2 13.8 7.2C15.4 7.2 17.1 8 18.3 9.5C15 11.3 15.5 16.2 19.4 17.2Z" fill="currentColor"/>
-    </svg>
-  )
-}
-
-const apps = [
-  {
-    id: 'first-edge',
-    emoji: '💹',
-    category: 'Investment Management',
-    name: 'First Edge',
-    desc: 'A robust wealth and investment management app for First Asset Management, enabling clients to monitor portfolios, track performance, and manage investments on the go.',
-    android: 'https://play.google.com/store/apps/details?id=com.first_assetmanagement.firstedge',
-    ios: 'https://apps.apple.com/fi/app/first-edge/id6759828990',
-    image: '/firstasset-dashboard.jpg',
-    downloads: '10K+',
-    badge: 'New',
-    featured: true,
-  },
-  {
-    id: 'norrenworld',
-    emoji: '🏦',
-    category: 'Financial Services',
-    name: 'NorrenWorld',
-    desc: "Full-service financial application for Norrenberger Financial Group — one of Nigeria's leading investment houses.",
-    android: 'https://play.google.com/store/apps/details?id=com.norrenberger.nicmlmobile',
-    ios: 'https://apps.apple.com/ie/app/norrenworld/id6502291999',
-    image: '/norren-dashboard.jpg',
-    downloads: '5K+',
-  },
-  {
-    id: 'corper-invest',
-    emoji: '🎖️',
-    category: 'Investment Platform',
-    name: 'Corper Invest',
-    desc: 'Dedicated investment platform designed for NYSC members — making wealth-building accessible from day one of service.',
-    android: 'https://play.google.com/store/apps/details?id=com.corperinvest.app',
-    ios: 'https://apps.apple.com/app/corper-invest-mobile/id6467129788',
-    downloads: '1K+',
-  },
-  {
-    id: 'zinary',
-    emoji: '💳',
-    category: 'Digital Finance',
-    name: 'Zinary Mobile',
-    desc: 'Digital financial services platform providing modern banking and payment features to underserved markets.',
-    android: 'https://www.zinary.com',
-    ios: 'https://www.zinary.com',
-    image: '/zinary-dashboard.png',
-  },
-  {
-    id: 'peerpay',
-    emoji: '🌍',
-    category: 'Cross-border Payments',
-    name: 'Peerpay Networks',
-    desc: 'Cross-border payment solution connecting users across Africa with fast, compliant international money transfer capabilities.',
-    badge: 'Coming Soon',
-  },
-  {
-    id: 'cape',
-    emoji: '📊',
-    category: 'Wealth Management',
-    name: 'Cape by Cordros',
-    desc: 'Modern wealth and investment management app for Cordros Capital — full suite of financial products with seamless fund management.',
-    badge: 'Design Ongoing',
-  },
-]
+import AppIcon from './components/AppIcon'
+import StoreIcon from './components/StoreIcon'
+import { useReveal } from './hooks/useReveal'
+import { featuredApps } from './data/apps'
 
 const aboutStats = [
   {
@@ -112,20 +27,7 @@ const aboutStats = [
 ]
 
 export default function Home() {
-  const revealRefs = useRef<HTMLElement[]>([])
-
-  useEffect(() => {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add('visible'), 80)
-          io.unobserve(e.target)
-        }
-      })
-    }, { threshold: 0.1 })
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el))
-    return () => io.disconnect()
-  }, [])
+  useReveal()
 
   return (
     <>
@@ -148,11 +50,7 @@ export default function Home() {
           backgroundSize: '80px 80px',
         }} />
 
-        <div style={{
-          fontSize: '12px', fontWeight: 700, letterSpacing: '0.14em',
-          color: 'var(--ak-red)', textTransform: 'uppercase',
-          marginBottom: '20px', position: 'relative',
-        }}>Let's Cook Something</div>
+        <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--ak-red)', textTransform: 'uppercase', marginBottom: '20px', position: 'relative' }}>Let's Cook Something</div>
 
         <h1 style={{
           fontFamily: "'Satoshi', sans-serif",
@@ -165,34 +63,23 @@ export default function Home() {
           Let's build it.
         </h1>
 
-        <div style={{
-          position: 'relative',
-          maxWidth: '620px',
-        }}>
+        <div style={{ position: 'relative', maxWidth: '620px' }}>
           <p style={{ maxWidth: '620px', fontSize: '18px', color: 'var(--ak-muted)', lineHeight: 1.7, marginBottom: '34px' }}>
             We partner with startups and financial institutions to turn early-stage concepts into fully deployed, scalable applications.
           </p>
           <div className="top-hero-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0, flexWrap: 'wrap' }}>
-            <Link href="/contact" style={{
+            <Link href="/contact" className="hero-btn-primary" style={{
               background: 'var(--ak-red)', color: '#fff',
               fontWeight: 600, fontSize: '15px',
               padding: '16px 36px', borderRadius: '100px',
               transition: 'all 0.2s', whiteSpace: 'nowrap',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--ak-red-dark)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'var(--ak-red)'; e.currentTarget.style.transform = 'translateY(0)' }}
-            >Start a Project</Link>
-            <a href="https://www.linkedin.com/in/jonah-rimamchirika-37abb086/" target="_blank" rel="noopener" style={{
+            }}>Start a Project</Link>
+            <a href="https://www.linkedin.com/in/jonah-rimamchirika-37abb086/" target="_blank" rel="noopener noreferrer" className="hero-btn-secondary" style={{
               fontWeight: 600, fontSize: '15px',
               padding: '16px 36px', borderRadius: '100px',
               border: '1px solid var(--ak-border)', color: 'var(--ak-muted)',
               transition: 'all 0.2s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}
-            >
-              Connect on LinkedIn
-            </a>
+            }}>Connect on LinkedIn</a>
           </div>
         </div>
       </section>
@@ -202,11 +89,7 @@ export default function Home() {
         borderTop: '1px solid var(--ak-border)', borderBottom: '1px solid var(--ak-border)',
         padding: '14px 0', overflow: 'hidden', background: 'var(--ak-off)',
       }}>
-        <div style={{
-          display: 'flex', gap: 0,
-          animation: 'ticker 25s linear infinite',
-          width: 'max-content',
-        }}>
+        <div style={{ display: 'flex', gap: 0, animation: 'ticker 25s linear infinite', width: 'max-content' }}>
           {[...Array(2)].flatMap(() => [
             'Flutter Development', 'Fintech Engineering', 'Asset Management Apps',
             'NestJS Backend', 'UI/UX Design', 'iOS & Android',
@@ -228,7 +111,7 @@ export default function Home() {
       {/* ABOUT */}
       <section id="about" className="about-section" style={{ padding: '100px 60px' }}>
         <div className="reveal" style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ak-red)', marginBottom: '20px' }}>About Apps Kitchen</div>
-        <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'start', marginTop: '0' }}>
+        <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'start' }}>
           <div>
             <h2 className="reveal about-title" style={{
               fontFamily: "'Satoshi', sans-serif", fontSize: 'clamp(36px, 4vw, 56px)',
@@ -270,27 +153,16 @@ export default function Home() {
                   <div style={{
                     fontFamily: "'Satoshi', sans-serif",
                     fontSize: 'clamp(60px, 8vw, 100px)',
-                    fontWeight: 900, lineHeight: 1,
-                    letterSpacing: '-0.04em', marginBottom: '12px',
+                    fontWeight: 900, lineHeight: 1, letterSpacing: '-0.04em', marginBottom: '12px',
                   }}>
                     <span style={{ color: 'var(--ak-red)' }}>{stat.num}</span>
                   </div>
                   <div style={{ fontSize: '14px', color: 'var(--ak-muted)', maxWidth: '280px', lineHeight: 1.6 }}>{stat.label}</div>
                   {stat.sourceHref && stat.sourceLabel && (
-                    <a
-                      href={stat.sourceHref}
-                      target="_blank"
-                      rel="noopener"
-                      style={{
-                        marginTop: '8px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '12px',
-                        color: 'var(--ak-red)',
-                        fontWeight: 600,
-                      }}
-                    >
+                    <a href={stat.sourceHref} target="_blank" rel="noopener noreferrer" style={{
+                      marginTop: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px',
+                      fontSize: '12px', color: 'var(--ak-red)', fontWeight: 600,
+                    }}>
                       {stat.sourceLabel}
                       <span style={{ fontSize: '13px', lineHeight: 1 }}>↗</span>
                     </a>
@@ -308,7 +180,7 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '50px', flexWrap: 'wrap', gap: '20px' }}>
           <div>
             <div className="reveal" style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ak-red)', marginBottom: '20px' }}>Selected Work</div>
-            <h2 className="reveal" style={{ fontFamily: "'Satoshi', sans-serif", fontSize: 'clamp(36px, 4vw, 60px)', fontWeight: 700, lineHeight: 1.05, letterSpacing: '-0.03em' }}>Apps we've<br />shipped.</h2>
+            <h2 className="reveal" style={{ fontFamily: "'Satoshi', sans-serif", fontSize: 'clamp(36px, 4vw, 60px)', fontWeight: 700, lineHeight: 1.05, letterSpacing: '-0.03em' }}>Apps we&rsquo;ve<br />shipped.</h2>
           </div>
           <p className="reveal" style={{ maxWidth: '320px', textAlign: 'right', fontSize: '16px', color: 'var(--ak-muted)', lineHeight: 1.7 }}>
             Every product below is live, used by real customers, and built with the same care we put into everything we cook.
@@ -316,7 +188,7 @@ export default function Home() {
         </div>
 
         <div className="reveal selected-work-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-          {apps.map((app) => (
+          {featuredApps.map((app) => (
             <div key={app.id} className="selected-app-card" style={{
               background: 'var(--ak-card)', border: '1px solid var(--ak-border)',
               borderRadius: '20px', padding: '32px 28px',
@@ -333,19 +205,15 @@ export default function Home() {
                 <a
                   href={app.android || app.ios}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   className="selected-app-media"
                   style={{
                     width: app.featured ? '180px' : '100%',
                     height: app.featured ? '110px' : '180px',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    border: '1px solid var(--ak-border)',
-                    display: 'block',
-                    flexShrink: 0,
-                    marginBottom: app.featured ? '0' : '20px',
-                    background: 'rgba(255,255,255,0.03)',
-                    position: 'relative',
+                    borderRadius: '16px', overflow: 'hidden',
+                    border: '1px solid var(--ak-border)', display: 'block',
+                    flexShrink: 0, marginBottom: app.featured ? '0' : '20px',
+                    background: 'rgba(255,255,255,0.03)', position: 'relative',
                   }}
                 >
                   <div style={{
@@ -354,7 +222,7 @@ export default function Home() {
                     background: 'rgba(10,10,10,0.65)', color: 'var(--ak-white)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     border: '1px solid rgba(255,255,255,0.2)',
-                  }}><WhiteAppIcon /></div>
+                  }}><AppIcon /></div>
                   <Image
                     src={app.image}
                     alt={`${app.name} app screenshot`}
@@ -368,32 +236,26 @@ export default function Home() {
                   width: app.featured ? '80px' : '64px',
                   height: app.featured ? '80px' : '64px',
                   borderRadius: app.featured ? '20px' : '16px',
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid var(--ak-border)',
+                  background: 'rgba(255,255,255,0.06)', border: '1px solid var(--ak-border)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'var(--ak-white)',
-                  flexShrink: 0,
+                  color: 'var(--ak-white)', flexShrink: 0,
                   marginBottom: app.featured ? '0' : '20px',
                 }}>
-                  <WhiteAppIcon />
+                  <AppIcon />
                 </div>
               )}
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ak-muted)', marginBottom: '8px' }}>{app.category}</div>
                 {app.downloads && (
                   <div style={{
-                    marginBottom: '10px',
-                    display: 'inline-flex', alignItems: 'center', gap: '7px',
-                    width: 'fit-content',
-                    color: 'var(--ak-white)',
-                    border: '1px solid rgba(255,255,255,0.16)',
-                    borderRadius: '999px',
-                    padding: '4px 10px',
-                    fontSize: '11px', fontWeight: 600, letterSpacing: '0.04em',
+                    marginBottom: '10px', display: 'inline-flex', alignItems: 'center', gap: '7px',
+                    width: 'fit-content', color: 'var(--ak-white)',
+                    border: '1px solid rgba(255,255,255,0.16)', borderRadius: '999px',
+                    padding: '4px 10px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.04em',
                     background: 'rgba(255,255,255,0.04)',
                   }}>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path d="M12 4V14M12 14L8.5 10.5M12 14L15.5 10.5M5 17.5H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 4V14M12 14L8.5 10.5M12 14L15.5 10.5M5 17.5H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                     {app.downloads} downloads
                   </div>
@@ -402,7 +264,7 @@ export default function Home() {
                 <p style={{ fontSize: '14px', color: 'var(--ak-muted)', lineHeight: 1.6, flex: 1, marginBottom: '20px' }}>{app.desc}</p>
                 <div className="selected-app-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                   {app.android && (
-                    <a href={app.android} target="_blank" rel="noopener" className="selected-app-btn" style={{
+                    <a href={app.android} target="_blank" rel="noopener noreferrer" className="selected-app-btn" style={{
                       fontSize: '12px', fontWeight: 500, color: 'var(--ak-muted)',
                       border: '1px solid var(--ak-border)', borderRadius: '100px',
                       padding: '8px 14px', transition: 'all 0.2s',
@@ -413,7 +275,7 @@ export default function Home() {
                     ><span style={{ color: 'var(--ak-white)', display: 'inline-flex' }}><StoreIcon type="android" /></span>Android</a>
                   )}
                   {app.ios && (
-                    <a href={app.ios} target="_blank" rel="noopener" className="selected-app-btn" style={{
+                    <a href={app.ios} target="_blank" rel="noopener noreferrer" className="selected-app-btn" style={{
                       fontSize: '12px', fontWeight: 500, color: 'var(--ak-muted)',
                       border: '1px solid var(--ak-border)', borderRadius: '100px',
                       padding: '8px 14px', transition: 'all 0.2s',
@@ -440,15 +302,12 @@ export default function Home() {
           ))}
         </div>
         <div style={{ marginTop: '40px', textAlign: 'center' }}>
-          <Link href="/work" style={{
+          <Link href="/work" className="view-all-btn" style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             fontWeight: 600, fontSize: '15px', color: 'var(--ak-red)',
             border: '1px solid rgba(232,56,13,0.3)', borderRadius: '100px',
             padding: '12px 28px', transition: 'all 0.2s',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(232,56,13,0.08)'; e.currentTarget.style.borderColor = 'rgba(232,56,13,0.5)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(232,56,13,0.3)' }}
-          >View All Projects →</Link>
+          }}>View All Projects →</Link>
         </div>
       </section>
 
@@ -464,7 +323,7 @@ export default function Home() {
             { num: '01', Icon: Search, title: 'Discovery', desc: 'We deeply understand your users, your business model, and what success looks like before a single line of code is written.' },
             { num: '02', Icon: PenTool, title: 'Design', desc: 'Figma-first. Every screen is designed for clarity, conversion, and consistency — then validated before development begins.' },
             { num: '03', Icon: Cog, title: 'Build', desc: 'Flutter for mobile, NestJS or Laravel for backend. Clean architecture, typed APIs, and security-first from day one.' },
-            { num: '04', Icon: Rocket, title: 'Ship & Grow', desc: "We deploy, monitor, and iterate. Your product doesn't stop evolving when it hits the store — neither do we." },
+            { num: '04', Icon: Rocket, title: 'Ship & Grow', desc: 'We deploy, monitor, and iterate. Your product keeps evolving after it hits the store — and so do we.' },
           ].map((step, i, arr) => (
             <div key={step.num} className="process-step" style={{
               padding: '40px 32px',
@@ -485,7 +344,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CEO */}
+      {/* FOUNDER */}
       <section className="founder-section" style={{ background: 'var(--ak-black)', padding: '100px 60px' }}>
         <div className="reveal" style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ak-red)', marginBottom: '20px' }}>The Person Behind It</div>
         <h2 className="reveal founder-title" style={{ fontFamily: "'Satoshi', sans-serif", fontSize: 'clamp(36px, 4vw, 60px)', fontWeight: 700, lineHeight: 1.05, letterSpacing: '-0.03em', marginBottom: '60px' }}>Led by someone<br />who ships.</h2>
@@ -493,8 +352,7 @@ export default function Home() {
           background: 'var(--ak-card)', border: '1px solid var(--ak-border)',
           borderRadius: '24px', padding: '60px',
           display: 'grid', gridTemplateColumns: 'auto 1fr',
-          gap: '60px', alignItems: 'center',
-          position: 'relative', overflow: 'hidden',
+          gap: '60px', alignItems: 'center', position: 'relative', overflow: 'hidden',
         }}>
           <div className="founder-quote-mark" style={{
             position: 'absolute', top: '-20px', right: '60px',
@@ -513,8 +371,7 @@ export default function Home() {
             <p style={{
               fontFamily: "'Satoshi', sans-serif",
               fontSize: 'clamp(18px, 2.5vw, 26px)',
-              fontWeight: 600, lineHeight: 1.4,
-              letterSpacing: '-0.02em', marginBottom: '28px',
+              fontWeight: 600, lineHeight: 1.4, letterSpacing: '-0.02em', marginBottom: '28px',
             }}>
               "Technology shines brightest when it's practical, accessible, and solves real-world problems. This principle drives every product we build across diverse businesses."
             </p>
@@ -546,7 +403,7 @@ export default function Home() {
             }}>{t}</span>
           ))}
           {['Next.js', 'Vue.js', 'React', 'C#', 'PostgreSQL', 'TypeORM', 'Riverpod', 'Paystack', 'Azure SSO', 'Strapi CMS', 'FastAPI', 'Clean Architecture'].map(t => (
-            <span key={t} style={{
+            <span key={t} className="stack-tag" style={{
               border: '1px solid var(--ak-border)', borderRadius: '100px',
               padding: '10px 22px', fontSize: '14px', fontWeight: 500,
               color: 'var(--ak-muted)', transition: 'all 0.2s', cursor: 'default',
@@ -563,8 +420,7 @@ export default function Home() {
         <div style={{
           position: 'absolute', width: '600px', height: '400px',
           background: 'radial-gradient(ellipse, rgba(232,56,13,0.15), transparent 70%)',
-          top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
+          top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none',
         }} />
         <div className="reveal" style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ak-red)', marginBottom: '20px', position: 'relative' }}>Ready To Launch</div>
         <h2 className="reveal" style={{
@@ -577,144 +433,53 @@ export default function Home() {
           Share your product goal, timeline, and constraints. We will map the build plan and start shipping with you.
         </p>
         <div className="reveal" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', position: 'relative' }}>
-          <Link href="/contact" style={{
+          <Link href="/contact" className="hero-btn-primary" style={{
             background: 'var(--ak-red)', color: '#fff',
             fontWeight: 600, fontSize: '15px',
-            padding: '16px 36px', borderRadius: '100px',
-            transition: 'all 0.2s',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'var(--ak-red-dark)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'var(--ak-red)'; e.currentTarget.style.transform = 'translateY(0)' }}
-          >Start a Project</Link>
-          <a href="https://www.linkedin.com/in/jonah-rimamchirika-37abb086/" target="_blank" rel="noopener" style={{
+            padding: '16px 36px', borderRadius: '100px', transition: 'all 0.2s',
+          }}>Start a Project</Link>
+          <a href="https://www.linkedin.com/in/jonah-rimamchirika-37abb086/" target="_blank" rel="noopener noreferrer" className="hero-btn-secondary" style={{
             fontWeight: 600, fontSize: '15px',
             padding: '16px 36px', borderRadius: '100px',
-            border: '1px solid var(--ak-border)', color: 'var(--ak-muted)',
-            transition: 'all 0.2s',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; e.currentTarget.style.color = 'var(--ak-white)' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--ak-border)'; e.currentTarget.style.color = 'var(--ak-muted)' }}
-          >Connect on LinkedIn</a>
+            border: '1px solid var(--ak-border)', color: 'var(--ak-muted)', transition: 'all 0.2s',
+          }}>Connect on LinkedIn</a>
         </div>
       </section>
 
       <Footer />
 
       <style>{`
-        @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        @keyframes pulse-red { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
+        .hero-btn-primary:hover { background: var(--ak-red-dark) !important; transform: translateY(-1px); }
+        .hero-btn-secondary:hover { color: var(--ak-white) !important; border-color: rgba(255,255,255,0.3) !important; }
+        .view-all-btn:hover { background: rgba(232,56,13,0.08) !important; border-color: rgba(232,56,13,0.5) !important; }
         @media (max-width: 900px) {
-          .about-section {
-            padding-top: 72px !important;
-            padding-bottom: 72px !important;
-          }
-          .about-grid {
-            grid-template-columns: 1fr !important;
-            gap: 28px !important;
-          }
-          .about-title {
-            font-size: clamp(30px, 9vw, 42px) !important;
-            margin-bottom: 14px !important;
-          }
-          .about-copy {
-            font-size: 15px !important;
-            margin-bottom: 24px !important;
-          }
-          .about-cards {
-            grid-template-columns: 1fr !important;
-            gap: 12px !important;
-          }
-          .about-card {
-            padding: 18px 16px !important;
-          }
-          .about-card-icon { color: var(--ak-white) !important; }
-          .about-card:hover .about-card-icon {
-            color: var(--ak-red) !important;
-          }
-          .process-icon { color: var(--ak-white) !important; }
-          .process-step:hover .process-icon { color: var(--ak-red) !important; }
-
-          .top-hero {
-            min-height: auto !important;
-            padding-top: 140px !important;
-            padding-bottom: 64px !important;
-          }
-          .top-hero-actions {
-            width: 100% !important;
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 10px !important;
-          }
-          .top-hero-actions a {
-            width: 100% !important;
-            justify-content: center !important;
-            text-align: center !important;
-            display: inline-flex !important;
-          }
-          .about-grid-inner { grid-template-columns: 1fr !important; }
+          .about-section { padding-top: 72px !important; padding-bottom: 72px !important; }
+          .about-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+          .about-title { font-size: clamp(30px, 9vw, 42px) !important; margin-bottom: 14px !important; }
+          .about-copy { font-size: 15px !important; margin-bottom: 24px !important; }
+          .about-cards { grid-template-columns: 1fr !important; gap: 12px !important; }
+          .about-card { padding: 18px 16px !important; }
+          .top-hero { min-height: auto !important; padding-top: 140px !important; padding-bottom: 64px !important; }
+          .top-hero-actions { width: 100% !important; flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
+          .top-hero-actions a { width: 100% !important; justify-content: center !important; text-align: center !important; display: inline-flex !important; }
           .process-section { padding-top: 72px !important; padding-bottom: 72px !important; }
           .process-title { margin-bottom: 26px !important; }
-          .process-grid {
-            grid-template-columns: 1fr !important;
-            border-radius: 16px !important;
-          }
-          .process-step {
-            border-right: none !important;
-            border-bottom: 1px solid var(--ak-border) !important;
-            padding: 24px 18px !important;
-          }
+          .process-grid { grid-template-columns: 1fr !important; border-radius: 16px !important; }
+          .process-step { border-right: none !important; border-bottom: 1px solid var(--ak-border) !important; padding: 24px 18px !important; }
           .process-step:last-child { border-bottom: none !important; }
-
           .founder-section { padding-top: 72px !important; padding-bottom: 72px !important; }
           .founder-title { margin-bottom: 26px !important; }
-          .founder-card {
-            grid-template-columns: 1fr !important;
-            gap: 18px !important;
-            padding: 24px 18px !important;
-            border-radius: 18px !important;
-          }
-          .founder-avatar {
-            width: 86px !important;
-            height: 86px !important;
-            font-size: 24px !important;
-          }
+          .founder-card { grid-template-columns: 1fr !important; gap: 18px !important; padding: 24px 18px !important; border-radius: 18px !important; }
+          .founder-avatar { width: 86px !important; height: 86px !important; font-size: 24px !important; }
           .founder-quote-mark { display: none !important; }
-          .founder-meta {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 10px !important;
-          }
+          .founder-meta { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
           .founder-divider { display: none !important; }
-
           .selected-work-grid { grid-template-columns: 1fr !important; }
-          .selected-app-card {
-            grid-column: span 1 !important;
-            flex-direction: column !important;
-            gap: 0 !important;
-            padding: 20px 16px !important;
-            border-radius: 18px !important;
-          }
-          .selected-app-media {
-            width: 100% !important;
-            height: 210px !important;
-            margin-bottom: 16px !important;
-          }
-          .selected-app-actions {
-            width: 100% !important;
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 8px !important;
-          }
-          .selected-app-btn {
-            width: 100% !important;
-            justify-content: center !important;
-            font-size: 13px !important;
-            padding: 10px 14px !important;
-          }
-          section {
-            padding-left: 18px !important;
-            padding-right: 18px !important;
-          }
+          .selected-app-card { grid-column: span 1 !important; flex-direction: column !important; gap: 0 !important; padding: 20px 16px !important; border-radius: 18px !important; }
+          .selected-app-media { width: 100% !important; height: 210px !important; margin-bottom: 16px !important; }
+          .selected-app-actions { width: 100% !important; flex-direction: column !important; align-items: stretch !important; gap: 8px !important; }
+          .selected-app-btn { width: 100% !important; justify-content: center !important; font-size: 13px !important; padding: 10px 14px !important; }
+          section { padding-left: 18px !important; padding-right: 18px !important; }
         }
       `}</style>
     </>
