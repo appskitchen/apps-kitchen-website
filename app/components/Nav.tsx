@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Moon, Sun } from 'lucide-react'
@@ -8,6 +8,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const navLinksRef = useRef<HTMLAnchorElement[]>([])
 
   const applyTheme = (nextTheme: 'dark' | 'light') => {
     setTheme(nextTheme)
@@ -86,11 +87,11 @@ export default function Nav() {
         display: 'flex', alignItems: 'center', gap: '40px',
         listStyle: 'none', fontSize: '14px', color: 'var(--ak-muted)',
       }} className="nav-links-desktop">
-        <li><Link href="/#about" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>About</Link></li>
-        <li><Link href="/work" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Work</Link></li>
-        <li><Link href="/#process" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Process</Link></li>
-        <li><Link href="/#stack" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Stack</Link></li>
-        <li><Link href="/contact" style={{ transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-white)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-muted)')}>Contact</Link></li>
+        <li><Link ref={(el) => { if (el) navLinksRef.current[0] = el }} href="/#about" style={{ transition: 'color 0.2s' }}>About</Link></li>
+        <li><Link ref={(el) => { if (el) navLinksRef.current[1] = el }} href="/work" style={{ transition: 'color 0.2s' }}>Work</Link></li>
+        <li><Link ref={(el) => { if (el) navLinksRef.current[2] = el }} href="/#process" style={{ transition: 'color 0.2s' }}>Process</Link></li>
+        <li><Link ref={(el) => { if (el) navLinksRef.current[3] = el }} href="/#stack" style={{ transition: 'color 0.2s' }}>Stack</Link></li>
+        <li><Link ref={(el) => { if (el) navLinksRef.current[4] = el }} href="/contact" style={{ transition: 'color 0.2s' }}>Contact</Link></li>
       </ul>
 
       <Link href="/contact" className="nav-cta" style={{

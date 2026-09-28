@@ -135,6 +135,7 @@ export default function Home() {
       <section className="top-hero" style={{
         minHeight: '92vh', display: 'flex', flexDirection: 'column',
         justifyContent: 'center', padding: '180px 60px 110px',
+        alignItems: 'center', textAlign: 'center',
         position: 'relative', overflow: 'hidden',
       }}>
         <div style={{
@@ -148,31 +149,33 @@ export default function Home() {
           backgroundSize: '80px 80px',
         }} />
 
-        <div style={{
-          fontSize: '12px', fontWeight: 700, letterSpacing: '0.14em',
-          color: 'var(--ak-red)', textTransform: 'uppercase',
-          marginBottom: '20px', position: 'relative',
-        }}>Let's Cook Something</div>
+        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{
+            fontSize: '12px', fontWeight: 700, letterSpacing: '0.14em',
+            color: 'var(--ak-red)', textTransform: 'uppercase',
+            marginBottom: '20px', textAlign: 'center',
+          }}>Let's Cook Something</div>
 
-        <h1 style={{
-          fontFamily: "'Satoshi', sans-serif",
-          fontSize: 'clamp(48px, 7vw, 96px)',
-          fontWeight: 900, lineHeight: 0.95,
-          letterSpacing: '-0.04em', color: 'var(--ak-white)',
-          marginBottom: '22px', position: 'relative',
-        }}>
-          Have an idea?<br />
-          Let's build it.
-        </h1>
+          <h1 style={{
+            fontFamily: "'Satoshi', sans-serif",
+            fontSize: 'clamp(48px, 7vw, 96px)',
+            fontWeight: 900, lineHeight: 0.95,
+            letterSpacing: '-0.04em', color: 'var(--ak-white)',
+            margin: '0 auto 22px', textAlign: 'center',
+          }}>
+            Have an idea?<br />
+            Let's build it.
+          </h1>
 
-        <div style={{
-          position: 'relative',
-          maxWidth: '620px',
-        }}>
-          <p style={{ maxWidth: '620px', fontSize: '18px', color: 'var(--ak-muted)', lineHeight: 1.7, marginBottom: '34px' }}>
+          <div style={{
+            maxWidth: '620px',
+            width: '100%',
+            margin: '0 auto', textAlign: 'center',
+          }}>
+          <p style={{ maxWidth: '620px', fontSize: '18px', color: 'var(--ak-muted)', lineHeight: 1.7, margin: '0 auto 34px', textAlign: 'center' }}>
             We partner with startups and financial institutions to turn early-stage concepts into fully deployed, scalable applications.
           </p>
-          <div className="top-hero-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0, flexWrap: 'wrap' }}>
+          <div className="top-hero-actions" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexShrink: 0, flexWrap: 'wrap' }}>
             <Link href="/contact" style={{
               background: 'var(--ak-red)', color: '#fff',
               fontWeight: 600, fontSize: '15px',
@@ -193,6 +196,7 @@ export default function Home() {
             >
               Connect on LinkedIn
             </a>
+          </div>
           </div>
         </div>
       </section>
