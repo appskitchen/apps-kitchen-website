@@ -13,14 +13,30 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', company: '', service: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = async () => {
-    if (!form.name || !form.email || !form.message) return
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) return
     setLoading(true)
-    // Simulate submission — replace with actual endpoint
-    await new Promise(r => setTimeout(r, 1200))
-    setLoading(false)
-    setSubmitted(true)
+    setError('')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Something went wrong. Please try again.')
+      } else {
+        setSubmitted(true)
+      }
+    } catch {
+      setError('Network error. Please check your connection and try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -51,13 +67,9 @@ export default function ContactPage() {
                 <div key={item.label}>
                   <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--ak-muted)', marginBottom: '6px' }}>{item.label}</div>
                   {item.href ? (
-                    <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener" style={{
-                      fontSize: '16px', color: 'var(--ak-white)', fontWeight: 500,
-                      transition: 'color 0.2s',
-                    }}
-                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--ak-red)')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'var(--ak-white)')}
-                    >{item.value}</a>
+                    <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" style={{ fontSize: '16px', color: 'var(--ak-white)', fontWeight: 500 }} className="contact-info-link">
+                      {item.value}
+                    </a>
                   ) : (
                     <span style={{ fontSize: '16px', color: 'var(--ak-white)', fontWeight: 500 }}>{item.value}</span>
                   )}
@@ -73,10 +85,7 @@ export default function ContactPage() {
           </div>
 
           {/* Right — Form */}
-          <div style={{
-            background: 'var(--ak-card)', border: '1px solid var(--ak-border)',
-            borderRadius: '24px', padding: '48px',
-          }}>
+          <div style={{ background: 'var(--ak-card)', border: '1px solid var(--ak-border)', borderRadius: '24px', padding: '48px' }}>
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
                 <div style={{ fontSize: '48px', marginBottom: '20px' }}>🎉</div>
@@ -84,7 +93,7 @@ export default function ContactPage() {
                 <p style={{ color: 'var(--ak-muted)', lineHeight: 1.7 }}>Thanks for reaching out. We'll be in touch within 24–48 hours.</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 <h2 style={{ fontFamily: "'Satoshi', sans-serif", fontSize: '22px', fontWeight: 700, marginBottom: '8px' }}>Send us a message</h2>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -94,54 +103,76 @@ export default function ContactPage() {
                 <Field label="Company" value={form.company} onChange={v => setForm(f => ({ ...f, company: v }))} placeholder="Your company or project name" />
 
                 <div>
-                  <label style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ak-muted)', display: 'block', marginBottom: '8px' }}>Service needed</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <p style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ak-muted)', display: 'block', marginBottom: '8px' }} id="service-label">Service needed</p>
+                  <div role="group" aria-labelledby="service-label" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {services.map(s => (
-                      <button key={s} onClick={() => setForm(f => ({ ...f, service: s }))} style={{
-                        fontSize: '12px', fontWeight: 500, padding: '6px 14px',
-                        borderRadius: '100px', cursor: 'pointer', transition: 'all 0.2s',
-                        background: form.service === s ? 'var(--ak-red)' : 'transparent',
-                        border: form.service === s ? '1px solid var(--ak-red)' : '1px solid var(--ak-border)',
-                        color: form.service === s ? '#fff' : 'var(--ak-muted)',
-                      }}>{s}</button>
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setForm(f => ({ ...f, service: f.service === s ? '' : s }))}
+                        aria-pressed={form.service === s}
+                        style={{
+                          fontSize: '12px', fontWeight: 500, padding: '6px 14px',
+                          borderRadius: '100px', cursor: 'pointer', transition: 'all 0.2s',
+                          background: form.service === s ? 'var(--ak-red)' : 'transparent',
+                          border: form.service === s ? '1px solid var(--ak-red)' : '1px solid var(--ak-border)',
+                          color: form.service === s ? '#fff' : 'var(--ak-muted)',
+                        }}
+                      >{s}</button>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ak-muted)', display: 'block', marginBottom: '8px' }}>Message *</label>
-                  <textarea value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} placeholder="Tell us about your project — what you're building, your timeline, and any constraints..." rows={5} style={{
-                    width: '100%', background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid var(--ak-border)', borderRadius: '12px',
-                    padding: '14px 16px', color: 'var(--ak-white)',
-                    fontSize: '14px', fontFamily: "'Satoshi', sans-serif",
-                    resize: 'vertical', outline: 'none', transition: 'border-color 0.2s',
-                  }}
-                    onFocus={e => (e.currentTarget.style.borderColor = 'rgba(232,56,13,0.4)')}
-                    onBlur={e => (e.currentTarget.style.borderColor = 'var(--ak-border)')}
+                  <label htmlFor="contact-message" style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ak-muted)', display: 'block', marginBottom: '8px' }}>Message *</label>
+                  <textarea
+                    id="contact-message"
+                    value={form.message}
+                    onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                    placeholder="Tell us about your project — what you're building, your timeline, and any constraints..."
+                    rows={5}
+                    required
+                    style={{
+                      width: '100%', background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid var(--ak-border)', borderRadius: '12px',
+                      padding: '14px 16px', color: 'var(--ak-white)',
+                      fontSize: '14px', fontFamily: "'Satoshi', sans-serif",
+                      resize: 'vertical', outline: 'none',
+                    }}
                   />
                 </div>
 
-                <button onClick={handleSubmit} disabled={loading} style={{
-                  background: loading ? 'var(--ak-muted)' : 'var(--ak-red)',
-                  color: '#fff', fontFamily: "'Satoshi', sans-serif",
-                  fontWeight: 600, fontSize: '15px',
-                  padding: '16px 36px', borderRadius: '100px',
-                  border: 'none', cursor: loading ? 'wait' : 'pointer',
-                  transition: 'all 0.2s', width: '100%',
-                }}
-                  onMouseEnter={e => { if (!loading) e.currentTarget.style.background = 'var(--ak-red-dark)' }}
-                  onMouseLeave={e => { if (!loading) e.currentTarget.style.background = 'var(--ak-red)' }}
+                {error && (
+                  <div role="alert" style={{ fontSize: '14px', color: '#f87171', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: '10px', padding: '12px 16px' }}>
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading || !form.name.trim() || !form.email.trim() || !form.message.trim()}
+                  style={{
+                    background: 'var(--ak-red)', color: '#fff',
+                    fontFamily: "'Satoshi', sans-serif",
+                    fontWeight: 600, fontSize: '15px',
+                    padding: '16px 36px', borderRadius: '100px',
+                    border: 'none', cursor: loading ? 'wait' : 'pointer',
+                    transition: 'all 0.2s', width: '100%',
+                    opacity: loading ? 0.7 : 1,
+                  }}
                 >
                   {loading ? 'Sending...' : 'Send Message →'}
                 </button>
-              </div>
+              </form>
             )}
           </div>
         </section>
       </div>
       <Footer />
       <style>{`
+        .contact-info-link { transition: color 0.2s; }
+        .contact-info-link:hover { color: var(--ak-red) !important; }
+        textarea:focus { border-color: rgba(232,56,13,0.4) !important; }
         @media (max-width: 900px) {
           section { grid-template-columns: 1fr !important; padding: 40px 24px 80px !important; }
         }
@@ -150,21 +181,29 @@ export default function ContactPage() {
   )
 }
 
-function Field({ label, value, onChange, placeholder, type = 'text' }: {
+function Field({
+  label, value, onChange, placeholder, type = 'text',
+}: {
   label: string; value: string; onChange: (v: string) => void; placeholder: string; type?: string
 }) {
+  const id = `field-${label.replace(/\W+/g, '-').toLowerCase()}`
   return (
     <div>
-      <label style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ak-muted)', display: 'block', marginBottom: '8px' }}>{label}</label>
-      <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={{
-        width: '100%', background: 'rgba(255,255,255,0.04)',
-        border: '1px solid var(--ak-border)', borderRadius: '12px',
-        padding: '12px 16px', color: 'var(--ak-white)',
-        fontSize: '14px', fontFamily: "'Satoshi', sans-serif",
-        outline: 'none', transition: 'border-color 0.2s',
-      }}
-        onFocus={e => (e.currentTarget.style.borderColor = 'rgba(232,56,13,0.4)')}
-        onBlur={e => (e.currentTarget.style.borderColor = 'var(--ak-border)')}
+      <label htmlFor={id} style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ak-muted)', display: 'block', marginBottom: '8px' }}>{label}</label>
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        required={label.includes('*')}
+        style={{
+          width: '100%', background: 'rgba(255,255,255,0.04)',
+          border: '1px solid var(--ak-border)', borderRadius: '12px',
+          padding: '12px 16px', color: 'var(--ak-white)',
+          fontSize: '14px', fontFamily: "'Satoshi', sans-serif",
+          outline: 'none',
+        }}
       />
     </div>
   )

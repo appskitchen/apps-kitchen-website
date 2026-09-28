@@ -1,104 +1,12 @@
 'use client'
-import { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-
-const WhiteAppIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" strokeWidth="1.8" />
-    <path d="M9 3V7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M15 3V7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M8 11H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-  </svg>
-)
-
-const StoreIcon = ({ type }: { type: 'android' | 'ios' }) => {
-  if (type === 'android') {
-    return (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M7 17V10M17 17V10M5.5 10H18.5M9 6L7.2 3.5M15 6L16.8 3.5M8 21V17M16 21V17M8 10V8.5C8 7.12 9.12 6 10.5 6H13.5C14.88 6 16 7.12 16 8.5V10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    )
-  }
-
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M15.6 5.2C14.8 6.2 13.4 6.9 12.2 6.8C12 5.5 12.6 4.2 13.3 3.3C14.2 2.3 15.7 1.7 16.9 1.8C17 3.1 16.5 4.3 15.6 5.2ZM19.4 17.2C18.8 18.1 18.6 18.5 17.8 19.3C16.8 20.4 15.5 21.8 13.8 21.8C12.3 21.8 11.9 20.9 9.9 20.9C7.8 20.9 7.4 21.8 5.9 21.8C4.2 21.8 3 20.5 2 19.4C-0.8 16.3 -1 12.5 0.6 10.1C1.8 8.3 3.7 7.2 5.5 7.2C7.4 7.2 8.5 8.2 9.8 8.2C11 8.2 11.8 7.2 13.8 7.2C15.4 7.2 17.1 8 18.3 9.5C15 11.3 15.5 16.2 19.4 17.2Z" fill="currentColor"/>
-    </svg>
-  )
-}
-
-const apps = [
-  {
-    emoji: '💹', category: 'Investment Management', name: 'First Edge',
-    desc: 'A robust wealth and investment management app for First Asset Management. Clients can monitor portfolios, track performance across multiple asset classes, and manage investments on the go.',
-    stack: ['Flutter', 'NestJS', 'PostgreSQL'],
-    android: 'https://play.google.com/store/apps/details?id=com.first_assetmanagement.firstedge',
-    ios: 'https://apps.apple.com/fi/app/first-edge/id6759828990',
-    image: '/firstasset-dashboard.jpg',
-    downloads: '10K+',
-    status: 'Live', badge: 'New',
-  },
-  {
-    emoji: '🏦', category: 'Financial Services', name: 'NorrenWorld',
-    desc: "Full-service financial application for Norrenberger Financial Group — one of Nigeria's leading investment houses. Covers portfolio management, fixed income, and equity trading.",
-    stack: ['Flutter', 'Laravel', 'REST API'],
-    android: 'https://play.google.com/store/apps/details?id=com.norrenberger.nicmlmobile',
-    ios: 'https://apps.apple.com/ie/app/norrenworld/id6502291999',
-    image: '/norren-dashboard.jpg',
-    downloads: '5K+',
-    status: 'Live',
-  },
-  {
-    emoji: '🎖️', category: 'Investment Platform', name: 'Corper Invest',
-    desc: 'Dedicated investment platform designed for NYSC corps members — making wealth-building accessible from day one of national service. Clean onboarding, wallet management, and investment tracking.',
-    stack: ['Flutter', 'Laravel', 'Paystack'],
-    android: 'https://play.google.com/store/apps/details?id=com.corperinvest.app',
-    ios: 'https://apps.apple.com/app/corper-invest-mobile/id6467129788',
-    downloads: '1K+',
-    status: 'Live',
-  },
-  {
-    emoji: '💳', category: 'Digital Finance', name: 'Zinary Mobile',
-    desc: 'Digital financial services platform providing modern banking and payment features to underserved markets. Includes wallet, transfers, and bill payments.',
-    stack: ['Flutter', 'NestJS', 'PostgreSQL'],
-    android: 'https://www.zinary.com', ios: 'https://www.zinary.com',
-    image: '/zinary-dashboard.png',
-    status: 'Live',
-  },
-  {
-    emoji: '🌍', category: 'Cross-border Payments', name: 'Peerpay Networks',
-    desc: 'Cross-border payment solution connecting users across Africa with fast, compliant international money transfer capabilities. Multi-currency wallets with real-time FX.',
-    stack: ['Flutter', 'NestJS', 'TypeORM'],
-    status: 'Coming Soon',
-  },
-  {
-    emoji: '📊', category: 'Wealth Management', name: 'Cape by Cordros',
-    desc: "Modern wealth and investment management app for Cordros Capital — Nigeria's leading capital market operator. Full suite of mutual funds, equities, and fixed income products.",
-    stack: ['Flutter', 'Figma', 'REST API'],
-    status: 'Design Ongoing',
-  },
-  {
-    emoji: '🌱', category: 'Agricultural Technology', name: 'AgroVesto',
-    desc: 'Field agent app for agricultural operations, enabling offline-capable beneficiary registration, farmer onboarding, and activity tracking for rural field teams.',
-    stack: ['Flutter', 'MVVM', 'SQLite'],
-    status: 'Delivered',
-  },
-  {
-    emoji: '🗺️', category: 'GIS / Field Operations', name: 'ACReSAL MIS',
-    desc: 'Offline-first field operations platform with GPS, GIS mapping, and background sync for government land restoration programmes. MVP delivered and production-ready.',
-    stack: ['Flutter', 'GIS', 'Background Sync'],
-    status: 'MVP Delivered',
-  },
-  {
-    emoji: '🇫🇷', category: 'EdTech / Language Learning', name: "Let's Speak French",
-    desc: 'French language learning app with audio-lyrics sync (Spotify-style), TTS modes, freemium paywall with Paystack, and a Laravel/Strapi backend.',
-    stack: ['Flutter', 'Laravel', 'Strapi CMS', 'Paystack'],
-    status: 'Live',
-  },
-]
+import AppIcon from '../components/AppIcon'
+import StoreIcon from '../components/StoreIcon'
+import { useReveal } from '../hooks/useReveal'
+import { apps } from '../data/apps'
 
 const statusColor = (s: string) => {
   if (s === 'Live') return { bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.3)', color: '#22c55e' }
@@ -107,13 +15,7 @@ const statusColor = (s: string) => {
 }
 
 export default function WorkPage() {
-  useEffect(() => {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), 80); io.unobserve(e.target) } })
-    }, { threshold: 0.05 })
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el))
-    return () => io.disconnect()
-  }, [])
+  useReveal(0.05)
 
   return (
     <>
@@ -133,10 +35,10 @@ export default function WorkPage() {
         {/* Grid */}
         <section style={{ padding: '0 60px 120px', borderTop: '1px solid var(--ak-border)' }}>
           <div className="work-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginTop: '60px' }}>
-            {apps.map((app, i) => {
+            {apps.map((app) => {
               const sc = statusColor(app.badge || app.status)
               return (
-                <div key={i} className="reveal work-card" style={{
+                <div key={app.id} className="reveal work-card" style={{
                   background: 'var(--ak-card)', border: '1px solid var(--ak-border)',
                   borderRadius: '20px', padding: '32px 28px',
                   display: 'flex', flexDirection: 'column',
@@ -150,17 +52,12 @@ export default function WorkPage() {
                       <a
                         href={app.android || app.ios}
                         target="_blank"
-                        rel="noopener"
+                        rel="noopener noreferrer"
                         className="work-media"
                         style={{
-                          width: '140px',
-                          height: '90px',
-                          borderRadius: '14px',
-                          overflow: 'hidden',
-                          border: '1px solid var(--ak-border)',
-                          display: 'block',
-                          background: 'rgba(255,255,255,0.03)',
-                          position: 'relative',
+                          width: '140px', height: '90px', borderRadius: '14px',
+                          overflow: 'hidden', border: '1px solid var(--ak-border)',
+                          display: 'block', background: 'rgba(255,255,255,0.03)', position: 'relative',
                         }}
                       >
                         <div style={{
@@ -169,7 +66,7 @@ export default function WorkPage() {
                           background: 'rgba(10,10,10,0.65)', color: 'var(--ak-white)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           border: '1px solid rgba(255,255,255,0.2)',
-                        }}><WhiteAppIcon /></div>
+                        }}><AppIcon size={20} /></div>
                         <Image
                           src={app.image}
                           alt={`${app.name} app screenshot`}
@@ -183,7 +80,7 @@ export default function WorkPage() {
                         width: '64px', height: '64px', borderRadius: '16px',
                         background: 'rgba(255,255,255,0.06)', border: '1px solid var(--ak-border)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ak-white)',
-                      }}><WhiteAppIcon /></div>
+                      }}><AppIcon size={20} /></div>
                     )}
                     <span style={{
                       fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em',
@@ -191,21 +88,18 @@ export default function WorkPage() {
                       background: sc.bg, border: `1px solid ${sc.border}`, color: sc.color,
                     }}>{app.badge || app.status}</span>
                   </div>
+
                   <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ak-muted)', marginBottom: '8px' }}>{app.category}</div>
                   {app.downloads && (
                     <div style={{
-                      marginBottom: '10px',
-                      display: 'inline-flex', alignItems: 'center', gap: '7px',
-                      width: 'fit-content',
-                      color: 'var(--ak-white)',
-                      border: '1px solid rgba(255,255,255,0.16)',
-                      borderRadius: '999px',
-                      padding: '4px 10px',
-                      fontSize: '11px', fontWeight: 600, letterSpacing: '0.04em',
+                      marginBottom: '10px', display: 'inline-flex', alignItems: 'center', gap: '7px',
+                      width: 'fit-content', color: 'var(--ak-white)',
+                      border: '1px solid rgba(255,255,255,0.16)', borderRadius: '999px',
+                      padding: '4px 10px', fontSize: '11px', fontWeight: 600, letterSpacing: '0.04em',
                       background: 'rgba(255,255,255,0.04)',
                     }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M12 4V14M12 14L8.5 10.5M12 14L15.5 10.5M5 17.5H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 4V14M12 14L8.5 10.5M12 14L15.5 10.5M5 17.5H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                       {app.downloads} downloads
                     </div>
@@ -216,14 +110,13 @@ export default function WorkPage() {
                     {app.stack.map(t => (
                       <span key={t} style={{
                         fontSize: '11px', fontWeight: 500, padding: '3px 10px',
-                        borderRadius: '100px', border: '1px solid var(--ak-border)',
-                        color: 'var(--ak-muted)',
+                        borderRadius: '100px', border: '1px solid var(--ak-border)', color: 'var(--ak-muted)',
                       }}>{t}</span>
                     ))}
                   </div>
                   <div className="work-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     {app.android && (
-                      <a href={app.android} target="_blank" rel="noopener" className="work-btn" style={{
+                      <a href={app.android} target="_blank" rel="noopener noreferrer" className="work-btn" style={{
                         fontSize: '12px', fontWeight: 500, color: 'var(--ak-muted)',
                         border: '1px solid var(--ak-border)', borderRadius: '100px',
                         padding: '8px 14px', transition: 'all 0.2s',
@@ -234,7 +127,7 @@ export default function WorkPage() {
                       ><span style={{ color: 'var(--ak-white)', display: 'inline-flex' }}><StoreIcon type="android" /></span>Android</a>
                     )}
                     {app.ios && (
-                      <a href={app.ios} target="_blank" rel="noopener" className="work-btn" style={{
+                      <a href={app.ios} target="_blank" rel="noopener noreferrer" className="work-btn" style={{
                         fontSize: '12px', fontWeight: 500, color: 'var(--ak-muted)',
                         border: '1px solid var(--ak-border)', borderRadius: '100px',
                         padding: '8px 14px', transition: 'all 0.2s',
@@ -270,8 +163,6 @@ export default function WorkPage() {
       </div>
       <Footer />
       <style>{`
-        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
         @media (max-width: 900px) {
           section { padding-left: 18px !important; padding-right: 18px !important; }
           .work-grid { grid-template-columns: 1fr !important; }
