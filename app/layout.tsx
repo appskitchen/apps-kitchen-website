@@ -36,19 +36,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-<<<<<<< HEAD
-      <body suppressHydrationWarning>
-        <Preloader />
-        {children}
-=======
       <head>
-        {/* Preconnect to font CDN to reduce latency */}
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="" />
       </head>
       <body suppressHydrationWarning>
         <a href="#main-content" className="skip-nav">Skip to main content</a>
+        <Preloader />
         <main id="main-content">{children}</main>
->>>>>>> 235fa4f1ab58cb9421129efd72581e810113184a
       </body>
     </html>
   )

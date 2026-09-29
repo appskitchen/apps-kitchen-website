@@ -51,16 +51,12 @@ export default function Home() {
           backgroundSize: '80px 80px',
         }} />
 
-<<<<<<< HEAD
         <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
           <div style={{
             fontSize: '12px', fontWeight: 700, letterSpacing: '0.14em',
             color: 'var(--ak-red)', textTransform: 'uppercase',
             marginBottom: '20px', textAlign: 'center',
           }}>Let's Cook Something</div>
-=======
-        <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--ak-red)', textTransform: 'uppercase', marginBottom: '20px', position: 'relative' }}>Let's Cook Something</div>
->>>>>>> 235fa4f1ab58cb9421129efd72581e810113184a
 
           <h1 style={{
             fontFamily: "'Satoshi', sans-serif",
@@ -73,7 +69,6 @@ export default function Home() {
             Let's build it.
           </h1>
 
-<<<<<<< HEAD
           <div style={{
             maxWidth: '620px',
             width: '100%',
@@ -83,15 +78,7 @@ export default function Home() {
             We partner with startups and financial institutions to turn early-stage concepts into fully deployed, scalable applications.
           </p>
           <div className="top-hero-actions" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexShrink: 0, flexWrap: 'wrap' }}>
-            <Link href="/contact" style={{
-=======
-        <div style={{ position: 'relative', maxWidth: '620px' }}>
-          <p style={{ maxWidth: '620px', fontSize: '18px', color: 'var(--ak-muted)', lineHeight: 1.7, marginBottom: '34px' }}>
-            We partner with startups and financial institutions to turn early-stage concepts into fully deployed, scalable applications.
-          </p>
-          <div className="top-hero-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0, flexWrap: 'wrap' }}>
             <Link href="/contact" className="hero-btn-primary" style={{
->>>>>>> 235fa4f1ab58cb9421129efd72581e810113184a
               background: 'var(--ak-red)', color: '#fff',
               fontWeight: 600, fontSize: '15px',
               padding: '16px 36px', borderRadius: '100px',
