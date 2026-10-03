@@ -22,9 +22,9 @@ export default function Footer() {
           display: 'flex', gap: '32px', listStyle: 'none',
           fontSize: '13px', color: 'var(--ak-muted)', flexWrap: 'wrap',
         }}>
-          <li><a href="mailto:jonahrchirika@gmail.com" className="footer-link">jonahrchirika@gmail.com</a></li>
+          <li><a href="mailto:support@appskitchen.io" className="footer-link">support@appskitchen.io</a></li>
           <li><a href="tel:+2349071752006" className="footer-link">+234 907 175 2006</a></li>
-          <li style={{ color: 'var(--ak-muted)' }}>Lagos, Nigeria</li>
+          <li style={{ color: 'var(--ak-muted)' }}>Abuja, Lagos, Jos, Nigeria</li>
         </ul>
 
         <nav aria-label="Footer navigation" style={{ display: 'flex', gap: '24px', fontSize: '13px' }}>
