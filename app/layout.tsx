@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   keywords: ['mobile app development', 'fintech', 'Flutter', 'NestJS', 'Lagos', 'Nigeria', 'investment app', 'software studio'],
   authors: [{ name: 'Apps Kitchen' }],
   creator: 'Apps Kitchen',
+  icons: {
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    apple: '/favicon_appskitchen.png',
+  },
   openGraph: {
     title: 'Apps Kitchen — We Build What Grows',
     description: 'Mobile app studio specialising in fintech and asset management applications. Based in Lagos, Nigeria.',
