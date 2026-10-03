@@ -59,9 +59,9 @@ export default function ContactPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               {[
-                { label: 'Email', value: 'jonahrchirika@gmail.com', href: 'mailto:jonahrchirika@gmail.com' },
+                { label: 'Email', value: 'support@appskitchen.io', href: 'mailto:support@appskitchen.io' },
                 { label: 'Phone', value: '+234 907 175 2006', href: 'tel:+2349071752006' },
-                { label: 'Location', value: 'Lagos, Nigeria', href: null },
+                { label: 'Location', value: 'Abuja, Lagos, Jos, Nigeria', href: null },
                 { label: 'LinkedIn', value: 'Jonah Rimamchirika', href: 'https://www.linkedin.com/in/jonah-rimamchirika-37abb086/' },
               ].map(item => (
                 <div key={item.label}>
